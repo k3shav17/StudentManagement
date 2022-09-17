@@ -1,0 +1,17 @@
+{
+  "firstName": "Ervin",
+  "lastName": "Howell",
+  "age": 14.0,
+  "gender": "male",
+  "mail": "Shanna@melissa.tv",
+  "dateOfBirth": "2007-05-01",
+  "standard": "9th",
+  "contactNumber": "9056677710",
+  "address": {
+    "locality": "Victor Plains",
+    "city": "kansas",
+    "state": "cleveland",
+    "country": "USA"
+  }
+}
+
