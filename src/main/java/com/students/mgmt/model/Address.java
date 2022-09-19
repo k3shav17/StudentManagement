@@ -1,7 +1,5 @@
 package com.students.mgmt.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 
 @Entity
@@ -14,12 +12,7 @@ public class Address {
     private String city;
     private String state;
     private String country;
-    @OneToOne(mappedBy = "address")
-    @JsonIgnore
-    private Student student;
 
-    public Address() {
-    }
 
     public Long getId() {
         return id;
@@ -59,13 +52,5 @@ public class Address {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
     }
 }

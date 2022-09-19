@@ -21,6 +21,7 @@ public interface StudentService {
 
     void deleteByMail(String mail);
 
-//    List<Student> getStudentsWithSameNameInAClass(String firstName, String standard);
+    void deleteByFirstName(String firstName);
+
 
 }

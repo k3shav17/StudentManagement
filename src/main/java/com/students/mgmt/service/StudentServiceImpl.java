@@ -34,22 +34,11 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAllByStandard(standard);
     }
 
-    //    @Override
-//    public void deleteById(Long id) {
-//        studentRepository.deleteById(id);
-//    }
-//
-//    @Override
-//    public Optional<Student> findById(Long id) {
-//        return studentRepository.findById(id);
-//    }
-//
     @Override
     public Optional<Student> findByMail(String mail) {
         return studentRepository.findByMail(mail);
     }
 
-    //
     @Override
     public Optional<Student> findByFirstName(String firstName) {
         return studentRepository.findByFirstName(firstName);
@@ -58,12 +47,14 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteByMail(String mail) {
         if (findByMail(mail).isPresent()) studentRepository.deleteByMail(mail);
+            //TODO: Replace generic exception with Custom
         else throw new RuntimeException(String.format("No student has found with mail %s", mail));
     }
 
-//    @Override
-//    public Optional<Student> DeleteByFirstName(String firstName) {
-//        return studentRepository.DeleteByFirstName(firstName);
-//}
-
+    @Override
+    public void deleteByFirstName(String firstName) {
+        if (findByFirstName(firstName).isPresent()) studentRepository.deleteStudentByFirstName(firstName);
+            //TODO: Replace generic exception with Custom
+        else throw new RuntimeException(String.format("No student has found with firstname %s", firstName));
+    }
 }

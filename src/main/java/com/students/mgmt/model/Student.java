@@ -28,9 +28,6 @@ public class Student {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    public Student() {
-    }
-
     public Long getId() {
         return id;
     }

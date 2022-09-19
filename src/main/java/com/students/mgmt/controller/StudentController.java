@@ -18,13 +18,9 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
-    @GetMapping("/home")
-    public String studentManagement() {
-        return "Welcome Student management system";
-    }
-
     @PostMapping("/save")
     public ResponseEntity<Student> save(@RequestBody Student student) {
+        //TODO: Add DTO
         Student savedStudent = studentService.save(student);
         return new ResponseEntity<>(savedStudent, new HttpHeaders(), HttpStatus.CREATED);
     }
@@ -49,10 +45,16 @@ public class StudentController {
         return new ResponseEntity<>(studentService.getAllStudentsFromSameClass(standard), new HttpHeaders(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{mail}")
+    @DeleteMapping("/delete/mail/{mail}")
     public ResponseEntity<String> deleteByMail(@PathVariable("mail") String mail) {
         studentService.deleteByMail(mail);
-        return new ResponseEntity<>(String.format("Record with mail id as %s has been removed.", mail), new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(String.format("Record with mail id %s has been removed.", mail), new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/fname/{firstname}")
+    public ResponseEntity<String> deleteByFirstName(@PathVariable("firstname") String firstName) {
+        studentService.deleteByFirstName(firstName);
+        return new ResponseEntity<>(String.format("Record with first name %s has been removed.", firstName), new HttpHeaders(), HttpStatus.OK);
     }
 
 }
