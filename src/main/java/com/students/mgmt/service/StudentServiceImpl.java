@@ -57,4 +57,31 @@ public class StudentServiceImpl implements StudentService {
             //TODO: Replace generic exception with Custom
         else throw new RuntimeException(String.format("No student has found with firstname %s", firstName));
     }
+
+    @Override
+    public void updateDetails(Student student) {
+        if (findByMail(student.getMail()).isPresent()) {
+            Optional<Student> tempStudentDetails = findByMail(student.getMail());
+            Long stuId = null;
+            if (tempStudentDetails.isPresent()) {
+                stuId = tempStudentDetails.get().getId();
+                updatingDetailsHelper(stuId, student);
+            }
+        } else throw new RuntimeException(String.format("No record with student named %s", student.getFirstName()));
+    }
+
+    public Optional<Student> updatingDetailsHelper(Long id, Student student) {
+        return studentRepository.findById(id).map(stu -> {
+            stu.setFirstName(student.getFirstName());
+            stu.setLastName(student.getLastName());
+            stu.setAge(student.getAge());
+            stu.setMail(student.getMail());
+            stu.setGender(student.getGender());
+            stu.setDateOfBirth(student.getDateOfBirth());
+            stu.setStandard(student.getStandard());
+            stu.setContactNumber(student.getContactNumber());
+
+            return studentRepository.save(stu);
+        });
+    }
 }

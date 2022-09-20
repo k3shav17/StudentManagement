@@ -57,4 +57,11 @@ public class StudentController {
         return new ResponseEntity<>(String.format("Record with first name %s has been removed.", firstName), new HttpHeaders(), HttpStatus.OK);
     }
 
+
+    @PutMapping("/update")
+    public ResponseEntity<String> update(@RequestBody Student student) {
+        studentService.updateDetails(student);
+        return  new ResponseEntity<>(String.format("Details of student with name %s and mail %s has been updated", student.getFirstName(), student.getMail()), new HttpHeaders(), HttpStatus.OK);
+    }
+
 }

@@ -23,5 +23,5 @@ public interface StudentService {
 
     void deleteByFirstName(String firstName);
 
-
+    void updateDetails(Student student);
 }
