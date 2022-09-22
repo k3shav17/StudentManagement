@@ -1,5 +1,7 @@
 package com.students.mgmt.service;
 
+import com.students.mgmt.exceptions.StudentExistsException;
+import com.students.mgmt.exceptions.StudentNotFoundException;
 import com.students.mgmt.model.Student;
 import com.students.mgmt.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student save(Student student) {
+
+        if (studentRepository.findByMail(student.getMail()).isPresent()) {
+            throw new StudentExistsException(String.format("Student with mail id %s exists in the system", student.getMail()));
+        }
         return studentRepository.save(student);
     }
 
@@ -36,26 +42,27 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Optional<Student> findByMail(String mail) {
-        return studentRepository.findByMail(mail);
+        if (studentRepository.findByMail(mail).isPresent()) return studentRepository.findByMail(mail);
+        else throw new StudentNotFoundException(String.format("No student found with mail %s", mail));
     }
 
     @Override
     public Optional<Student> findByFirstName(String firstName) {
-        return studentRepository.findByFirstName(firstName);
+        if (studentRepository.findByFirstName(firstName).isPresent())
+            return studentRepository.findByFirstName(firstName);
+        else throw new StudentNotFoundException(String.format("Student not found with first name %s", firstName));
     }
 
     @Override
     public void deleteByMail(String mail) {
         if (findByMail(mail).isPresent()) studentRepository.deleteByMail(mail);
-            //TODO: Replace generic exception with Custom
-        else throw new RuntimeException(String.format("No student has found with mail %s", mail));
+        else throw new StudentNotFoundException(String.format("No student has found with mail %s", mail));
     }
 
     @Override
     public void deleteByFirstName(String firstName) {
         if (findByFirstName(firstName).isPresent()) studentRepository.deleteStudentByFirstName(firstName);
-            //TODO: Replace generic exception with Custom
-        else throw new RuntimeException(String.format("No student has found with firstname %s", firstName));
+        else throw new StudentNotFoundException(String.format("No student has found with firstname %s", firstName));
     }
 
     @Override
@@ -67,11 +74,12 @@ public class StudentServiceImpl implements StudentService {
                 stuId = tempStudentDetails.get().getId();
                 updatingDetailsHelper(stuId, student);
             }
-        } else throw new RuntimeException(String.format("No record with student named %s", student.getFirstName()));
+        } else
+            throw new StudentNotFoundException(String.format("No record with student named %s", student.getFirstName()));
     }
 
-    public Optional<Student> updatingDetailsHelper(Long id, Student student) {
-        return studentRepository.findById(id).map(stu -> {
+    private void updatingDetailsHelper(Long id, Student student) {
+        studentRepository.findById(id).map(stu -> {
             stu.setFirstName(student.getFirstName());
             stu.setLastName(student.getLastName());
             stu.setAge(student.getAge());
