@@ -1,5 +1,7 @@
 package com.students.mgmt.controller;
 
+import com.students.mgmt.exceptions.StudentExistsException;
+import com.students.mgmt.exceptions.StudentNotFoundException;
 import com.students.mgmt.model.Student;
 import com.students.mgmt.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/api/")
@@ -19,10 +20,14 @@ public class StudentController {
     StudentService studentService;
 
     @PostMapping("/save")
-    public ResponseEntity<Student> save(@RequestBody Student student) {
+    public ResponseEntity<?> save(@RequestBody Student student) {
         //TODO: Add DTO
-        Student savedStudent = studentService.save(student);
-        return new ResponseEntity<>(savedStudent, new HttpHeaders(), HttpStatus.CREATED);
+        try {
+            Student savedStudent = studentService.save(student);
+            return new ResponseEntity<>(savedStudent, new HttpHeaders(), HttpStatus.CREATED);
+        } catch (StudentExistsException see) {
+            return new ResponseEntity<>(see.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 
     @GetMapping("/students")
@@ -31,13 +36,21 @@ public class StudentController {
     }
 
     @GetMapping("/mail/{mailId}")
-    public ResponseEntity<Optional<Student>> getByMail(@PathVariable("mailId") String mail) {
-        return new ResponseEntity<>(studentService.findByMail(mail), new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity<?> getByMail(@PathVariable("mailId") String mail) {
+        try {
+            return new ResponseEntity<>(studentService.findByMail(mail), new HttpHeaders(), HttpStatus.OK);
+        } catch (StudentNotFoundException snfe) {
+            return new ResponseEntity<>(snfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/fname/{name}")
-    public ResponseEntity<Optional<Student>> getByFirstName(@PathVariable("name") String firstName) {
-        return new ResponseEntity<>(studentService.findByFirstName(firstName), new HttpHeaders(), HttpStatus.OK);
+    public ResponseEntity<?> getByFirstName(@PathVariable("name") String firstName) {
+        try {
+            return new ResponseEntity<>(studentService.findByFirstName(firstName), new HttpHeaders(), HttpStatus.OK);
+        } catch (StudentNotFoundException snfe) {
+            return new ResponseEntity<>(snfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/standard/{class}")
@@ -47,21 +60,31 @@ public class StudentController {
 
     @DeleteMapping("/delete/mail/{mail}")
     public ResponseEntity<String> deleteByMail(@PathVariable("mail") String mail) {
-        studentService.deleteByMail(mail);
-        return new ResponseEntity<>(String.format("Record with mail id %s has been removed.", mail), new HttpHeaders(), HttpStatus.OK);
+        try {
+            studentService.deleteByMail(mail);
+            return new ResponseEntity<>(String.format("Record with mail id %s has been removed.", mail), new HttpHeaders(), HttpStatus.OK);
+        } catch (StudentNotFoundException snfe) {
+            return new ResponseEntity<>(snfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/delete/fname/{firstname}")
     public ResponseEntity<String> deleteByFirstName(@PathVariable("firstname") String firstName) {
-        studentService.deleteByFirstName(firstName);
-        return new ResponseEntity<>(String.format("Record with first name %s has been removed.", firstName), new HttpHeaders(), HttpStatus.OK);
+        try {
+            studentService.deleteByFirstName(firstName);
+            return new ResponseEntity<>(String.format("Record with first name %s has been removed.", firstName), new HttpHeaders(), HttpStatus.OK);
+        } catch (StudentNotFoundException snfe) {
+            return new ResponseEntity<>(snfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
-
 
     @PutMapping("/update")
     public ResponseEntity<String> update(@RequestBody Student student) {
-        studentService.updateDetails(student);
-        return  new ResponseEntity<>(String.format("Details of student with name %s and mail %s has been updated", student.getFirstName(), student.getMail()), new HttpHeaders(), HttpStatus.OK);
+        try {
+            studentService.updateDetails(student);
+            return new ResponseEntity<>(String.format("Details of student with name %s and mail %s has been updated", student.getFirstName(), student.getMail()), new HttpHeaders(), HttpStatus.OK);
+        } catch (StudentNotFoundException snfe) {
+            return new ResponseEntity<>(snfe.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
-
 }
