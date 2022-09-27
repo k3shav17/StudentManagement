@@ -20,7 +20,7 @@ public class StudentController {
     StudentService studentService;
 
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Student student) {
+    public ResponseEntity<Object> save(@RequestBody Student student) {
         //TODO: Add DTO
         try {
             Student savedStudent = studentService.save(student);
@@ -36,7 +36,7 @@ public class StudentController {
     }
 
     @GetMapping("/mail/{mailId}")
-    public ResponseEntity<?> getByMail(@PathVariable("mailId") String mail) {
+    public ResponseEntity<Object> getByMail(@PathVariable("mailId") String mail) {
         try {
             return new ResponseEntity<>(studentService.findByMail(mail), new HttpHeaders(), HttpStatus.OK);
         } catch (StudentNotFoundException snfe) {
@@ -45,7 +45,7 @@ public class StudentController {
     }
 
     @GetMapping("/fname/{name}")
-    public ResponseEntity<?> getByFirstName(@PathVariable("name") String firstName) {
+    public ResponseEntity<Object> getByFirstName(@PathVariable("name") String firstName) {
         try {
             return new ResponseEntity<>(studentService.findByFirstName(firstName), new HttpHeaders(), HttpStatus.OK);
         } catch (StudentNotFoundException snfe) {

@@ -14,7 +14,7 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService {
 
     @Autowired
-    StudentRepository studentRepository;
+    protected StudentRepository studentRepository;
 
     @Override
     public Student save(Student student) {
@@ -69,7 +69,7 @@ public class StudentServiceImpl implements StudentService {
     public void updateDetails(Student student) {
         if (findByMail(student.getMail()).isPresent()) {
             Optional<Student> tempStudentDetails = findByMail(student.getMail());
-            Long stuId = null;
+            Long stuId;
             if (tempStudentDetails.isPresent()) {
                 stuId = tempStudentDetails.get().getId();
                 updatingDetailsHelper(stuId, student);
@@ -78,8 +78,8 @@ public class StudentServiceImpl implements StudentService {
             throw new StudentNotFoundException(String.format("No record with student named %s", student.getFirstName()));
     }
 
-    private void updatingDetailsHelper(Long id, Student student) {
-        studentRepository.findById(id).map(stu -> {
+    private Optional<Student> updatingDetailsHelper(Long id, Student student) {
+       return studentRepository.findById(id).map(stu -> {
             stu.setFirstName(student.getFirstName());
             stu.setLastName(student.getLastName());
             stu.setAge(student.getAge());
@@ -88,6 +88,7 @@ public class StudentServiceImpl implements StudentService {
             stu.setDateOfBirth(student.getDateOfBirth());
             stu.setStandard(student.getStandard());
             stu.setContactNumber(student.getContactNumber());
+            stu.setAddress(student.getAddress());
 
             return studentRepository.save(stu);
         });
