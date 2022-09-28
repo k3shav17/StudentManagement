@@ -28,6 +28,4 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query(value = "DELETE student, address FROM student INNER JOIN address ON address.id = student.id WHERE first_name = :firstName", nativeQuery = true)
     void deleteStudentByFirstName(@Param("firstName") String firstName);
 
-//    List<Student> getStudentsWithSameNameInAClass(String firstName, String standard);
-
 }
