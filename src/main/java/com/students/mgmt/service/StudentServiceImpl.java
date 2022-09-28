@@ -79,7 +79,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     private Optional<Student> updatingDetailsHelper(Long id, Student student) {
-       return studentRepository.findById(id).map(stu -> {
+        return studentRepository.findById(id).map(stu -> {
             stu.setFirstName(student.getFirstName());
             stu.setLastName(student.getLastName());
             stu.setAge(student.getAge());
